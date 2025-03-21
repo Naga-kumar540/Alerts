@@ -34,4 +34,4 @@ EXPOSE ${PORT:-8080}
 ENTRYPOINT ["sh", "-c", "echo \"Starting application on port ${PORT:-8080}\" && java -jar app.jar"]
 
 # Run the application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+#ENTRYPOINT ["java", "-jar", "app.jar"]
