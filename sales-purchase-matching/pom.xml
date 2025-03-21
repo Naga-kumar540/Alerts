@@ -15,7 +15,7 @@
 	<name>sales-purchase-matching</name>
 	<description>Demo project for Spring Boot</description>
 	<url />
-	<licenses>
+<!-- 	<licenses>
 		<license />
 	</licenses>
 	<developers>
@@ -26,7 +26,8 @@
 		<developerConnection />
 		<tag />
 		<url />
-	</scm>
+	</scm> -->
+	
 	<properties>
 		<java.version>17</java.version>
 	</properties>
