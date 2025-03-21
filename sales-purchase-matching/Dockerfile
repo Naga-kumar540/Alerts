@@ -10,6 +10,10 @@ COPY src ./src
 # Fix Spring Boot version in pom.xml
 RUN sed -i 's/<version>3.4.3<\/version>/<version>3.2.3<\/version>/' pom.xml
 
+# Fix the annotation processor path issue
+RUN sed -i '/<path>/,/<\/path>/c\        <path>\n          <groupId>org.projectlombok<\/groupId>\n          <artifactId>lombok<\/artifactId>\n          <version>${lombok.version}<\/version>\n        <\/path>' pom.xml
+
+
 # Build the application
 RUN mvn package -DskipTests
 
