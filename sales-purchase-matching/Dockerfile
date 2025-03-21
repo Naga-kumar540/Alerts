@@ -28,5 +28,10 @@ COPY --from=build /app/target/*.jar app.jar
 # Expose the port the app runs on
 EXPOSE 8080
 
+# At the end of your Dockerfile, before the ENTRYPOINT
+RUN echo "PORT is set to: $PORT"
+EXPOSE ${PORT:-8080}
+ENTRYPOINT ["sh", "-c", "echo \"Starting application on port ${PORT:-8080}\" && java -jar app.jar"]
+
 # Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
