@@ -1,0 +1,122 @@
+2025-03-20T10:44:54.363+05:30  INFO 22636 --- [sales-purchase-matching] [restartedMain] c.i.SalesPurchaseMatchingApplication     : Starting SalesPurchaseMatchingApplication using Java 22.0.1 with PID 22636 (D:\vaakruthi_java_programs\sales-purchase-matching\target\classes started by nagak in D:\vaakruthi_java_programs\sales-purchase-matching)
+2025-03-20T10:44:54.369+05:30 DEBUG 22636 --- [sales-purchase-matching] [restartedMain] c.i.SalesPurchaseMatchingApplication     : Running with Spring Boot v3.4.3, Spring v6.2.3
+2025-03-20T10:44:54.371+05:30  INFO 22636 --- [sales-purchase-matching] [restartedMain] c.i.SalesPurchaseMatchingApplication     : No active profile set, falling back to 1 default profile: "default"
+2025-03-20T10:44:54.453+05:30  INFO 22636 --- [sales-purchase-matching] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-03-20T10:44:54.453+05:30  INFO 22636 --- [sales-purchase-matching] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-03-20T10:44:55.460+05:30  INFO 22636 --- [sales-purchase-matching] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-03-20T10:44:55.558+05:30  INFO 22636 --- [sales-purchase-matching] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 77 ms. Found 3 JPA repository interfaces.
+2025-03-20T10:44:56.454+05:30  INFO 22636 --- [sales-purchase-matching] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-03-20T10:44:56.481+05:30  INFO 22636 --- [sales-purchase-matching] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-03-20T10:44:56.481+05:30  INFO 22636 --- [sales-purchase-matching] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.36]
+2025-03-20T10:44:56.556+05:30  INFO 22636 --- [sales-purchase-matching] [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-03-20T10:44:56.557+05:30  INFO 22636 --- [sales-purchase-matching] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2102 ms
+2025-03-20T10:44:56.835+05:30  INFO 22636 --- [sales-purchase-matching] [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-03-20T10:44:56.937+05:30  INFO 22636 --- [sales-purchase-matching] [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.8.Final
+2025-03-20T10:44:57.020+05:30  INFO 22636 --- [sales-purchase-matching] [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-03-20T10:44:57.503+05:30  INFO 22636 --- [sales-purchase-matching] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-03-20T10:44:57.553+05:30  INFO 22636 --- [sales-purchase-matching] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-03-20T10:44:57.822+05:30  INFO 22636 --- [sales-purchase-matching] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@54934371
+2025-03-20T10:44:57.825+05:30  INFO 22636 --- [sales-purchase-matching] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-03-20T10:44:57.869+05:30  WARN 22636 --- [sales-purchase-matching] [restartedMain] org.hibernate.orm.deprecation            : HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-03-20T10:44:57.871+05:30  WARN 22636 --- [sales-purchase-matching] [restartedMain] org.hibernate.orm.deprecation            : HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-03-20T10:44:57.904+05:30  INFO 22636 --- [sales-purchase-matching] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-03-20T10:45:00.068+05:30  INFO 22636 --- [sales-purchase-matching] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-03-20T10:45:00.210+05:30  INFO 22636 --- [sales-purchase-matching] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-03-20T10:45:00.903+05:30  INFO 22636 --- [sales-purchase-matching] [restartedMain] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-03-20T10:45:02.522+05:30  WARN 22636 --- [sales-purchase-matching] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-03-20T10:45:02.565+05:30  INFO 22636 --- [sales-purchase-matching] [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2025-03-20T10:45:03.122+05:30  INFO 22636 --- [sales-purchase-matching] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2025-03-20T10:45:03.180+05:30  INFO 22636 --- [sales-purchase-matching] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-03-20T10:45:03.189+05:30  INFO 22636 --- [sales-purchase-matching] [restartedMain] c.i.SalesPurchaseMatchingApplication     : Started SalesPurchaseMatchingApplication in 9.498 seconds (process running for 11.032)
+2025-03-20T10:45:55.871+05:30  INFO 22636 --- [sales-purchase-matching] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-03-20T10:45:55.871+05:30  INFO 22636 --- [sales-purchase-matching] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-03-20T10:45:55.877+05:30  INFO 22636 --- [sales-purchase-matching] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 6 ms
+2025-03-20T10:45:56.963+05:30  INFO 22636 --- [sales-purchase-matching] [http-nio-8080-exec-4] c.i.controller.NotificationController    : Retrieved 128 new notifications
+2025-03-20T10:45:57.075+05:30  INFO 22636 --- [sales-purchase-matching] [http-nio-8080-exec-3] c.i.controller.NotificationController    : Generated 5 renewal notifications from manual check
+2025-03-20T10:46:03.091+05:30  INFO 22636 --- [sales-purchase-matching] [http-nio-8080-exec-7] c.i.controller.NotificationController    : Debug: Retrieved 132 notifications
+2025-03-20T10:46:03.111+05:30  INFO 22636 --- [sales-purchase-matching] [http-nio-8080-exec-9] c.i.controller.NotificationController    : Retrieved 6 notifications of type RENEWAL
+2025-03-20T10:46:03.111+05:30  INFO 22636 --- [sales-purchase-matching] [http-nio-8080-exec-8] c.i.controller.NotificationController    : Retrieved 0 notifications of type INVOICE_NEEDED
+2025-03-20T10:46:03.127+05:30  INFO 22636 --- [sales-purchase-matching] [http-nio-8080-exec-10] c.i.controller.NotificationController    : Retrieved 16 notifications of type INVOICE_OVERDUE
+2025-03-20T10:46:03.165+05:30  INFO 22636 --- [sales-purchase-matching] [http-nio-8080-exec-1] c.i.controller.NotificationController    : Retrieved 132 notifications
+2025-03-20T10:46:13.314+05:30  INFO 22636 --- [sales-purchase-matching] [http-nio-8080-exec-6] c.i.controller.NotificationController    : Retrieved 0 notifications of type INVOICE_NEEDED
+2025-03-20T10:46:13.319+05:30  INFO 22636 --- [sales-purchase-matching] [http-nio-8080-exec-2] c.i.controller.NotificationController    : Retrieved 16 notifications of type INVOICE_OVERDUE
+2025-03-20T10:46:13.319+05:30  INFO 22636 --- [sales-purchase-matching] [http-nio-8080-exec-5] c.i.controller.NotificationController    : Retrieved 6 notifications of type RENEWAL
+2025-03-20T10:46:56.613+05:30  INFO 22636 --- [sales-purchase-matching] [http-nio-8080-exec-4] c.i.controller.NotificationController    : Retrieved 132 new notifications
+2025-03-20T10:47:12.414+05:30  INFO 22636 --- [sales-purchase-matching] [http-nio-8080-exec-9] c.i.controller.NotificationController    : Retrieved 0 notifications of type INVOICE_NEEDED
+2025-03-20T10:47:12.417+05:30  INFO 22636 --- [sales-purchase-matching] [http-nio-8080-exec-8] c.i.controller.NotificationController    : Retrieved 16 notifications of type INVOICE_OVERDUE
+2025-03-20T10:47:12.418+05:30  INFO 22636 --- [sales-purchase-matching] [http-nio-8080-exec-10] c.i.controller.NotificationController    : Retrieved 6 notifications of type RENEWAL
+2025-03-20T10:47:56.606+05:30  INFO 22636 --- [sales-purchase-matching] [http-nio-8080-exec-1] c.i.controller.NotificationController    : Retrieved 132 new notifications
+2025-03-20T10:48:56.602+05:30  INFO 22636 --- [sales-purchase-matching] [http-nio-8080-exec-5] c.i.controller.NotificationController    : Retrieved 132 new notifications
+2025-03-20T10:49:27.794+05:30  INFO 22636 --- [sales-purchase-matching] [http-nio-8080-exec-4] c.i.controller.NotificationController    : Debug: Retrieved 132 notifications
+2025-03-20T10:49:27.810+05:30  INFO 22636 --- [sales-purchase-matching] [http-nio-8080-exec-3] c.i.controller.NotificationController    : Retrieved 132 notifications
+2025-03-20T10:49:56.614+05:30  INFO 22636 --- [sales-purchase-matching] [http-nio-8080-exec-7] c.i.controller.NotificationController    : Retrieved 132 new notifications
+2025-03-20T10:49:56.777+05:30  INFO 22636 --- [sales-purchase-matching] [RMI TCP Connection(7)-127.0.0.1] inMXBeanRegistrar$SpringApplicationAdmin : Application shutdown requested.
+2025-03-20T10:49:56.780+05:30  INFO 22636 --- [sales-purchase-matching] [RMI TCP Connection(7)-127.0.0.1] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-03-20T10:49:56.788+05:30  INFO 22636 --- [sales-purchase-matching] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-03-20T10:49:56.793+05:30  INFO 22636 --- [sales-purchase-matching] [RMI TCP Connection(7)-127.0.0.1] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-03-20T10:49:56.797+05:30  INFO 22636 --- [sales-purchase-matching] [RMI TCP Connection(7)-127.0.0.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-03-20T10:49:56.805+05:30  INFO 22636 --- [sales-purchase-matching] [RMI TCP Connection(7)-127.0.0.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-03-20T15:31:47.841+05:30  INFO 26816 --- [sales-purchase-matching] [restartedMain] c.i.SalesPurchaseMatchingApplication     : Starting SalesPurchaseMatchingApplication using Java 22.0.1 with PID 26816 (D:\vaakruthi_java_programs\sales-purchase-matching\target\classes started by nagak in D:\vaakruthi_java_programs\sales-purchase-matching)
+2025-03-20T15:31:47.844+05:30 DEBUG 26816 --- [sales-purchase-matching] [restartedMain] c.i.SalesPurchaseMatchingApplication     : Running with Spring Boot v3.4.3, Spring v6.2.3
+2025-03-20T15:31:47.846+05:30  INFO 26816 --- [sales-purchase-matching] [restartedMain] c.i.SalesPurchaseMatchingApplication     : No active profile set, falling back to 1 default profile: "default"
+2025-03-20T15:31:47.906+05:30  INFO 26816 --- [sales-purchase-matching] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-03-20T15:31:47.907+05:30  INFO 26816 --- [sales-purchase-matching] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-03-20T15:31:48.610+05:30  INFO 26816 --- [sales-purchase-matching] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-03-20T15:31:48.677+05:30  INFO 26816 --- [sales-purchase-matching] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 57 ms. Found 3 JPA repository interfaces.
+2025-03-20T15:31:49.277+05:30  INFO 26816 --- [sales-purchase-matching] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-03-20T15:31:49.302+05:30  INFO 26816 --- [sales-purchase-matching] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-03-20T15:31:49.302+05:30  INFO 26816 --- [sales-purchase-matching] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.36]
+2025-03-20T15:31:49.361+05:30  INFO 26816 --- [sales-purchase-matching] [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-03-20T15:31:49.362+05:30  INFO 26816 --- [sales-purchase-matching] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1454 ms
+2025-03-20T15:31:49.573+05:30  INFO 26816 --- [sales-purchase-matching] [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-03-20T15:31:49.646+05:30  INFO 26816 --- [sales-purchase-matching] [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.8.Final
+2025-03-20T15:31:49.700+05:30  INFO 26816 --- [sales-purchase-matching] [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-03-20T15:31:50.071+05:30  INFO 26816 --- [sales-purchase-matching] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-03-20T15:31:50.135+05:30  INFO 26816 --- [sales-purchase-matching] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-03-20T15:31:50.357+05:30  INFO 26816 --- [sales-purchase-matching] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@64e14fbf
+2025-03-20T15:31:50.360+05:30  INFO 26816 --- [sales-purchase-matching] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-03-20T15:31:50.410+05:30  WARN 26816 --- [sales-purchase-matching] [restartedMain] org.hibernate.orm.deprecation            : HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-03-20T15:31:50.411+05:30  WARN 26816 --- [sales-purchase-matching] [restartedMain] org.hibernate.orm.deprecation            : HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-03-20T15:31:50.439+05:30  INFO 26816 --- [sales-purchase-matching] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-03-20T15:31:51.485+05:30  INFO 26816 --- [sales-purchase-matching] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-03-20T15:31:51.594+05:30  INFO 26816 --- [sales-purchase-matching] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-03-20T15:31:51.872+05:30  INFO 26816 --- [sales-purchase-matching] [restartedMain] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-03-20T15:31:52.523+05:30  WARN 26816 --- [sales-purchase-matching] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-03-20T15:31:52.550+05:30  INFO 26816 --- [sales-purchase-matching] [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2025-03-20T15:31:52.901+05:30  WARN 26816 --- [sales-purchase-matching] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : Unable to start LiveReload server
+2025-03-20T15:31:52.946+05:30  INFO 26816 --- [sales-purchase-matching] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-03-20T15:31:52.957+05:30  INFO 26816 --- [sales-purchase-matching] [restartedMain] c.i.SalesPurchaseMatchingApplication     : Started SalesPurchaseMatchingApplication in 5.599 seconds (process running for 6.537)
+2025-03-20T15:32:27.103+05:30  INFO 26816 --- [sales-purchase-matching] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-03-20T15:32:27.103+05:30  INFO 26816 --- [sales-purchase-matching] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-03-20T15:32:27.116+05:30  INFO 26816 --- [sales-purchase-matching] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 13 ms
+2025-03-20T15:32:28.073+05:30  INFO 26816 --- [sales-purchase-matching] [http-nio-8080-exec-3] c.i.controller.NotificationController    : Retrieved 132 new notifications
+2025-03-20T15:32:28.180+05:30  INFO 26816 --- [sales-purchase-matching] [http-nio-8080-exec-4] c.i.controller.NotificationController    : Generated 5 renewal notifications from manual check
+2025-03-20T15:32:58.540+05:30  INFO 26816 --- [sales-purchase-matching] [http-nio-8080-exec-7] c.i.controller.NotificationController    : Debug: Retrieved 132 notifications
+2025-03-20T15:32:58.552+05:30  INFO 26816 --- [sales-purchase-matching] [http-nio-8080-exec-5] c.i.controller.NotificationController    : Retrieved 0 notifications of type INVOICE_NEEDED
+2025-03-20T15:32:58.552+05:30  INFO 26816 --- [sales-purchase-matching] [http-nio-8080-exec-9] c.i.controller.NotificationController    : Retrieved 16 notifications of type INVOICE_OVERDUE
+2025-03-20T15:32:58.562+05:30  INFO 26816 --- [sales-purchase-matching] [http-nio-8080-exec-8] c.i.controller.NotificationController    : Retrieved 6 notifications of type RENEWAL
+2025-03-20T15:32:58.608+05:30  INFO 26816 --- [sales-purchase-matching] [http-nio-8080-exec-10] c.i.controller.NotificationController    : Retrieved 132 notifications
+2025-03-20T15:33:03.650+05:30  INFO 26816 --- [sales-purchase-matching] [http-nio-8080-exec-4] c.i.controller.NotificationController    : Retrieved 16 notifications of type INVOICE_OVERDUE
+2025-03-20T15:33:03.652+05:30  INFO 26816 --- [sales-purchase-matching] [http-nio-8080-exec-2] c.i.controller.NotificationController    : Retrieved 6 notifications of type RENEWAL
+2025-03-20T15:33:03.652+05:30  INFO 26816 --- [sales-purchase-matching] [http-nio-8080-exec-1] c.i.controller.NotificationController    : Retrieved 0 notifications of type INVOICE_NEEDED
+2025-03-20T15:33:27.754+05:30  INFO 26816 --- [sales-purchase-matching] [http-nio-8080-exec-3] c.i.controller.NotificationController    : Retrieved 132 new notifications
+2025-03-20T15:33:48.678+05:30  INFO 26816 --- [sales-purchase-matching] [RMI TCP Connection(4)-127.0.0.1] inMXBeanRegistrar$SpringApplicationAdmin : Application shutdown requested.
+2025-03-20T15:33:48.681+05:30  INFO 26816 --- [sales-purchase-matching] [RMI TCP Connection(4)-127.0.0.1] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-03-20T15:33:48.687+05:30  INFO 26816 --- [sales-purchase-matching] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-03-20T15:33:48.692+05:30  INFO 26816 --- [sales-purchase-matching] [RMI TCP Connection(4)-127.0.0.1] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-03-20T15:33:48.698+05:30  INFO 26816 --- [sales-purchase-matching] [RMI TCP Connection(4)-127.0.0.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-03-20T15:33:48.705+05:30  INFO 26816 --- [sales-purchase-matching] [RMI TCP Connection(4)-127.0.0.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

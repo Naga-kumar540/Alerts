@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Sales-Purchase Matching System</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css">
+    <style>
+        .notification-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: #ffebee;
+            border-left: 4px solid #f44336;
+            border-radius: 3px;
+        }
+        .notification-item.RENEWAL {
+            background-color: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+        .notification-item.INVOICE_NEEDED {
+            background-color: #fff8e1;
+            border-left-color: #ffc107;
+        }
+        .notification-item.INVOICE_OVERDUE {
+            background-color: #ffebee;
+            border-left-color: #f44336;
+        }
+        .notification-item.MISMATCH_PRICE,
+        .notification-item.MISMATCH_DATE,
+        .notification-item.MISMATCH_QUANTITY {
+            background-color: #fce4ec;
+            border-left-color: #e91e63;
+        }
+        .tab-section {
+            margin-bottom: 20px;
+        }
+        .badge-counter {
+            position: absolute;
+            top: -5px;
+            right: -8px;
+            font-size: 10px;
+            padding: 2px 5px;
+        }
+        .notification-badge {
+            position: relative;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <header class="bg-light p-4 mb-4 rounded">
+            <h1>Sales-Purchase Matching System</h1>
+            <p class="lead">Manage and match sales and purchase records</p>
+        </header>
+
+        <!-- Data Entry Tabs -->
+        <ul class="nav nav-tabs mb-3" id="dataEntryTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="purchase-upload-tab" data-bs-toggle="tab" data-bs-target="#purchase-upload" type="button" role="tab">Upload Purchases</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="sale-upload-tab" data-bs-toggle="tab" data-bs-target="#sale-upload" type="button" role="tab">Upload Sales</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="sale-entry-tab" data-bs-toggle="tab" data-bs-target="#sale-entry" type="button" role="tab">Add Sale</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="purchase-entry-tab" data-bs-toggle="tab" data-bs-target="#purchase-entry" type="button" role="tab">Add Purchase</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="dataEntryTabContent">
+            <!-- Purchase File Upload Tab -->
+            <div class="tab-pane fade show active" id="purchase-upload" role="tabpanel">
+                <div class="bg-light p-4 mb-4 rounded">
+                    <h2>Upload Purchases File</h2>
+                    <form id="upload-purchase-form" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <input class="form-control" type="file" id="purchase-file-input" accept=".csv,.xlsx,.xls" required>
+                            <small class="text-muted">Supported formats: Excel (XLSX, XLS)</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Upload and Process</button>
+                    </form>
+                    <div id="upload-purchase-status" class="mt-3"></div>
+                </div>
+            </div>
+
+            <!-- Sale File Upload Tab -->
+            <div class="tab-pane fade" id="sale-upload" role="tabpanel">
+                <div class="bg-light p-4 mb-4 rounded">
+                    <h2>Upload Sales File</h2>
+                    <form id="upload-sale-form" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <input class="form-control" type="file" id="sale-file-input" accept=".csv,.xlsx,.xls" required>
+                            <small class="text-muted">Supported formats: Excel (XLSX, XLS)</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Upload and Process</button>
+                    </form>
+                    <div id="upload-sale-status" class="mt-3"></div>
+                </div>
+            </div>
+
+            <!-- Sale Entry Tab -->
+            <div class="tab-pane fade" id="sale-entry" role="tabpanel">
+                <div class="bg-light p-4 mb-4 rounded">
+                    <h2>Add Sale Record</h2>
+                    <form id="sale-form">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="sale-customer-name" class="form-label">Customer Name</label>
+                                <input type="text" class="form-control" id="sale-customer-name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="sale-domain-name" class="form-label">Domain Name</label>
+                                <input type="text" class="form-control" id="sale-domain-name" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="sale-item-name" class="form-label">Item/Plan Name</label>
+                                <input type="text" class="form-control" id="sale-item-name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="sale-price" class="form-label">Sale Price</label>
+                                <input type="number" class="form-control" id="sale-price" step="0.01" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="sale-end-date" class="form-label">End Date (Renewal)</label>
+                                <input type="date" class="form-control" id="sale-end-date" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="sale-start-date" class="form-label">Start Date</label>
+                                <input type="date" class="form-control" id="sale-start-date">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="sale-billing-frequency" class="form-label">Billing Frequency</label>
+                                <select class="form-select" id="sale-billing-frequency" required>
+                                    <option value="Monthly">Monthly</option>
+                                    <option value="Quarterly">Quarterly</option>
+                                    <option value="Semi Annual">Semi-Annual</option>
+                                    <option value="Annual">Annual</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="sale-plan-type" class="form-label">Plan Type</label>
+                                <select class="form-select" id="sale-plan-type" required>
+                                    <option value="Flexible">Flexible</option>
+                                    <option value="Commitment">Commitment</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="sale-quantity" class="form-label">Quantity</label>
+                                <input type="number" class="form-control" id="sale-quantity" min="1" value="1" required>
+                            </div>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="sale-gst-included">
+                            <label class="form-check-label" for="sale-gst-included">GST Included</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Sale</button>
+                    </form>
+                    <div id="sale-status" class="mt-3"></div>
+                </div>
+            </div>
+
+            <!-- Purchase Entry Tab -->
+            <div class="tab-pane fade" id="purchase-entry" role="tabpanel">
+                <div class="bg-light p-4 mb-4 rounded">
+                    <h2>Add Purchase Record</h2>
+                    <form id="purchase-form">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="purchase-domain-name" class="form-label">Domain Name</label>
+                                <input type="text" class="form-control" id="purchase-domain-name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="purchase-subscription" class="form-label">Subscription/Plan Name</label>
+                                <input type="text" class="form-control" id="purchase-subscription" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="purchase-amount" class="form-label">Purchase Amount</label>
+                                <input type="number" class="form-control" id="purchase-amount" step="0.01" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="purchase-end-date" class="form-label">End Date (Renewal)</label>
+                                <input type="date" class="form-control" id="purchase-end-date" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="purchase-start-date" class="form-label">Start Date</label>
+                                <input type="date" class="form-control" id="purchase-start-date" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="purchase-quantity" class="form-label">Quantity</label>
+                                <input type="number" class="form-control" id="purchase-quantity" min="1" value="1" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="purchase-description" class="form-label">Description</label>
+                            <textarea class="form-control" id="purchase-description" rows="2"></textarea>
+                            <small class="text-muted">Optional. Include "commitment" if this is a commitment plan.</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Purchase</button>
+                    </form>
+                    <div id="purchase-status" class="mt-3"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Tabs -->
+        <ul class="nav nav-tabs" id="resultTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="sales-tab" data-bs-toggle="tab" data-bs-target="#sales" type="button" role="tab">Sales Data</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="purchases-tab" data-bs-toggle="tab" data-bs-target="#purchases" type="button" role="tab">Purchases Data</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="matches-tab" data-bs-toggle="tab" data-bs-target="#matches" type="button" role="tab">Matches</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="discrepancies-tab" data-bs-toggle="tab" data-bs-target="#discrepancies" type="button" role="tab">Discrepancies</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link position-relative" id="notifications-tab" data-bs-toggle="tab" data-bs-target="#notifications" type="button" role="tab">
+                    Notifications
+                    <span class="notification-badge">
+                        <span id="notification-count" class="badge rounded-pill bg-danger badge-counter" style="display:none">0</span>
+                    </span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link position-relative" id="invoice-notifications-tab" data-bs-toggle="tab" data-bs-target="#invoice-notifications" type="button" role="tab">
+                    Invoice Notifications
+                    <span class="notification-badge">
+                        <span id="invoice-notification-count" class="badge rounded-pill bg-warning badge-counter" style="display:none">0</span>
+                    </span>
+                </button>
+            </li>
+        </ul>
+        
+        <div class="tab-content p-3 border border-top-0 rounded-bottom" id="resultTabContent">
+            <!-- Sales Data Tab -->
+            <div class="tab-pane fade show active" id="sales" role="tabpanel">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2>Sales Data</h2>
+                    <div>
+                        <button class="btn btn-primary me-2" onclick="loadSalesData()">Refresh</button>
+                        <button class="btn btn-danger" onclick="clearAllData()">Clear All Data</button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Customer</th>
+                                <th>Domain</th>
+                                <th>Item</th>
+                                <th>Price</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Billing Frequency</th>
+                                <th>Plan Type</th>
+                                <th>Quantity</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sales-table-body">
+                            <!-- Sales will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Purchases Data Tab -->
+            <div class="tab-pane fade" id="purchases" role="tabpanel">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2>Purchases Data</h2>
+                    <div>
+                        <button class="btn btn-primary me-2" onclick="loadPurchasesData()">Refresh</button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Domain</th>
+                                <th>Subscription</th>
+                                <th>Amount</th>
+                                <th>Rate PU</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Plan Type</th>
+                                <th>Quantity</th>
+                            </tr>
+                        </thead>
+                        <tbody id="purchases-table-body">
+                            <!-- Purchases will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Matches Tab -->
+            <div class="tab-pane fade" id="matches" role="tabpanel">
+                <h2>Matching Records</h2>
+                <button class="btn btn-primary mb-3" onclick="runComparison()">Run Matching</button>
+                <div id="comparison-results"></div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Domain</th>
+                                <th>Customer</th>
+                                <th>Item/Subscription</th>
+                                <th>Purchase Price</th>
+                                <th>Sale Price</th>
+                                <th>Date Match</th>
+                                <th>Price Match</th>
+                                <th>Quantity Match</th>
+                            </tr>
+                        </thead>
+                        <tbody id="matches-table-body">
+                            <!-- Matches will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Discrepancies Tab -->
+            <div class="tab-pane fade" id="discrepancies" role="tabpanel">
+                <h2>Discrepancies</h2>
+                <div id="discrepancies-list"></div>
+            </div>
+            
+            <!-- Notifications Tab -->
+            <div class="tab-pane fade" id="notifications" role="tabpanel">
+                <h2>Notifications</h2>
+                <div class="mb-3">
+                    <button class="btn btn-primary me-2" onclick="loadNotifications()">Load Notifications</button>
+                    <button class="btn btn-warning me-2" onclick="forceComparison()">Force Comparison</button>
+                    <button class="btn btn-info me-2" onclick="checkRenewals()">Check Renewals</button>
+                    <select id="notification-type" class="form-select d-inline-block w-auto" onchange="loadNotifications()">
+                        <option value="all">All Notifications</option>
+                        <option value="RENEWAL">Renewals</option>
+                        <option value="MISMATCH_DATE">Date Mismatches</option>
+                        <option value="MISMATCH_PRICE">Price Mismatches</option>
+                        <option value="MISMATCH_QUANTITY">Quantity Mismatches</option>
+                        <option value="UNMATCHED_SALE">Unmatched Sales</option>
+                        <option value="UNMATCHED_PURCHASE">Unmatched Purchases</option>
+                    </select>
+                </div>
+                <div id="notifications-list"></div>
+            </div>
+            
+            <!-- Invoice Notifications Tab -->
+            <div class="tab-pane fade" id="invoice-notifications" role="tabpanel">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2>Invoice Notifications</h2>
+                    <div>
+                        <button class="btn btn-primary me-2" onclick="loadInvoiceNotifications()">Refresh</button>
+                        <button class="btn btn-warning me-2" onclick="checkInvoiceNotifications()">Check For Invoice Needs</button>
+                        <button class="btn btn-danger me-2" onclick="checkOverdueInvoices()">Check Overdue Invoices</button>
+                    </div>
+                </div>
+                
+                <!-- Invoice Summary Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card border-warning mb-3">
+                            <div class="card-header bg-warning text-dark">Pending Invoices</div>
+                            <div class="card-body">
+                                <h5 class="card-title" id="pending-invoice-count">0</h5>
+                                <p class="card-text">Invoices that need to be raised</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card border-danger mb-3">
+                            <div class="card-header bg-danger text-white">Overdue Invoices</div>
+                            <div class="card-body">
+                                <h5 class="card-title" id="overdue-invoice-count">0</h5>
+                                <p class="card-text">Invoices that are past due date</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card border-info mb-3">
+                            <div class="card-header bg-info text-white">Upcoming Renewals</div>
+                            <div class="card-body">
+                                <h5 class="card-title" id="upcoming-renewal-count">0</h5>
+                                <p class="card-text">Renewals due in the next 30 days</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <ul class="nav nav-tabs" id="invoiceNotificationTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="pending-invoices-tab" data-bs-toggle="tab" data-bs-target="#pending-invoices" type="button" role="tab">Pending Invoices</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="overdue-invoices-tab" data-bs-toggle="tab" data-bs-target="#overdue-invoices" type="button" role="tab">Overdue Invoices</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="upcoming-renewals-tab" data-bs-toggle="tab" data-bs-target="#upcoming-renewals" type="button" role="tab">Upcoming Renewals</button>
+                    </li>
+                </ul>
+                
+                <div class="tab-content p-3 border border-top-0 rounded-bottom" id="invoiceNotificationTabContent">
+                    <!-- Pending Invoices Tab -->
+                    <div class="tab-pane fade show active" id="pending-invoices" role="tabpanel">
+                        <div id="pending-invoices-list"></div>
+                    </div>
+                    
+                    <!-- Overdue Invoices Tab -->
+                    <div class="tab-pane fade" id="overdue-invoices" role="tabpanel">
+                        <div id="overdue-invoices-list"></div>
+                    </div>
+                    
+                    <!-- Upcoming Renewals Tab -->
+                    <div class="tab-pane fade" id="upcoming-renewals" role="tabpanel">
+                        <div id="upcoming-renewals-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Form submission for purchase file upload
+        document.getElementById('upload-purchase-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const fileInput = document.getElementById('purchase-file-input');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Please select a file to upload');
+                return;
+            }
+            
+            // Show loading indicator
+            const statusDiv = document.getElementById('upload-purchase-status');
+            statusDiv.innerHTML = '<div class="alert alert-info">Uploading file, please wait...</div>';
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            fetch('/api/files/upload/purchase', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                statusDiv.innerHTML = '<div class="alert alert-success">Purchase file uploaded and processed successfully!</div>';
+                loadPurchasesData();
+                // Automatically run a comparison after upload
+                forceComparison();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                statusDiv.innerHTML = `<div class="alert alert-danger">
+                    <strong>Error!</strong> An error occurred during upload: ${error.message}
+                </div>`;
+            });
+        });
+
+        // Form submission for sale file upload
+        document.getElementById('upload-sale-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const fileInput = document.getElementById('sale-file-input');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Please select a file to upload');
+                return;
+            }
+            
+            // Show loading indicator
+            const statusDiv = document.getElementById('upload-sale-status');
+            statusDiv.innerHTML = '<div class="alert alert-info">Uploading file, please wait...</div>';
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            // Ensure this URL exactly matches your controller's mapping
+            fetch('/api/files/upload/sales', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    statusDiv.innerHTML = `<div class="alert alert-success">
+                        Sales file uploaded successfully! ${data.recordsUploaded} records processed.
+                    </div>`;
+                    loadSalesData();
+                    // Automatically run a comparison after upload
+                    forceComparison();
+                } else {
+                    statusDiv.innerHTML = `<div class="alert alert-danger">
+                        <strong>Error!</strong> ${data.message}
+                    </div>`;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                statusDiv.innerHTML = `<div class="alert alert-danger">
+                    <strong>Error!</strong> An error occurred during upload: ${error.message}
+                </div>`;
+            });
+        });
+
+        // Sale form submission
+        document.getElementById('sale-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const sale = {
+                customerName: document.getElementById('sale-customer-name').value,
+                domainName: document.getElementById('sale-domain-name').value,
+                itemName: document.getElementById('sale-item-name').value,
+                price: parseFloat(document.getElementById('sale-price').value),
+                startDate: document.getElementById('sale-start-date').value,
+                endDate: document.getElementById('sale-end-date').value,
+                billingFrequency: document.getElementById('sale-billing-frequency').value,
+                planType: document.getElementById('sale-plan-type').value,
+                quantity: parseInt(document.getElementById('sale-quantity').value),
+                gstTreatment: document.getElementById('sale-gst-included').checked ? 'business_gst' : 'consumer'
+            };
+            
+            const statusDiv = document.getElementById('sale-status');
+            statusDiv.innerHTML = '<div class="alert alert-info">Adding sale record, please wait...</div>';
+            
+            fetch('/api/sales', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(sale)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                statusDiv.innerHTML = '<div class="alert alert-success">Sale record added successfully!</div>';
+                document.getElementById('sale-form').reset();
+                loadSalesData();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                statusDiv.innerHTML = `<div class="alert alert-danger">
+                    <strong>Error!</strong> Failed to add sale record: ${error.message}
+                </div>`;
+            });
+        });
+
+        // Purchase form submission
+        document.getElementById('purchase-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const purchase = {
+                domainName: document.getElementById('purchase-domain-name').value,
+                subscription: document.getElementById('purchase-subscription').value,
+                amount: parseFloat(document.getElementById('purchase-amount').value),
+                startDate: document.getElementById('purchase-start-date').value,
+                endDate: document.getElementById('purchase-end-date').value,
+                quantity: parseInt(document.getElementById('purchase-quantity').value),
+                description: document.getElementById('purchase-description').value
+            };
+            
+            const statusDiv = document.getElementById('purchase-status');
+            statusDiv.innerHTML = '<div class="alert alert-info">Adding purchase record, please wait...</div>';
+            
+            fetch('/api/purchases', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(purchase)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                statusDiv.innerHTML = '<div class="alert alert-success">Purchase record added successfully!</div>';
+                document.getElementById('purchase-form').reset();
+                loadPurchasesData();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                statusDiv.innerHTML = `<div class="alert alert-danger">
+                    <strong>Error!</strong> Failed to add purchase record: ${error.message}
+                </div>`;
+            });
+        });
+
+        // Load sales data
+        function loadSalesData() {
+            const salesTableBody = document.getElementById('sales-table-body');
+            salesTableBody.innerHTML = '<tr><td colspan="10" class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
+            
+            fetch('/api/sales')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                salesTableBody.innerHTML = '';
+                
+                if (data.length === 0) {
+                    salesTableBody.innerHTML = '<tr><td colspan="10" class="text-center">No sales records found.</td></tr>';
+                    return;
+                }
+                
+                data.forEach(sale => {
+                    // Format dates
+                    let startDate = 'N/A';
+                    let endDate = 'N/A';
+                    
+                    if (sale.startDate) {
+                        startDate = new Date(sale.startDate).toLocaleDateString();
+                    }
+                    
+                    if (sale.endDate) {
+                        endDate = new Date(sale.endDate).toLocaleDateString();
+                    }
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${sale.id}</td>
+                        <td>${sale.customerName || 'N/A'}</td>
+                        <td>${sale.domainName || 'N/A'}</td>
+                        <td>${sale.itemName || 'N/A'}</td>
+                        <td>$${sale.price ? sale.price.toFixed(2) : '0.00'}</td>
+                        <td>${startDate}</td>
+                        <td>${endDate}</td>
+                        <td>${sale.billingFrequency || 'N/A'}</td>
+                        <td>${sale.planType || 'N/A'}</td>
+                        <td>${sale.quantity || '0'}</td>
+                    `;
+                    salesTableBody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                salesTableBody.innerHTML = '<tr><td colspan="10" class="text-danger">An error occurred while loading sales data.</td></tr>';
+            });
+            
+            // Also check for renewals whenever sales data is loaded
+            checkRenewals();
+        }
+
+        // Load purchases data
+        function loadPurchasesData() {
+            const purchasesTableBody = document.getElementById('purchases-table-body');
+            purchasesTableBody.innerHTML = '<tr><td colspan="9" class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
+            
+            fetch('/api/purchases')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                purchasesTableBody.innerHTML = '';
+                
+                if (data.length === 0) {
+                    purchasesTableBody.innerHTML = '<tr><td colspan="9" class="text-center">No purchase records found.</td></tr>';
+                    return;
+                }
+                
+                data.forEach(purchase => {
+                    // Format dates
+                    let startDate = 'N/A';
+                    let endDate = 'N/A';
+                    
+                    if (purchase.startDate) {
+                        startDate = new Date(purchase.startDate).toLocaleDateString();
+                    }
+                    
+                    if (purchase.endDate) {
+                        endDate = new Date(purchase.endDate).toLocaleDateString();
+                    }
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${purchase.id}</td>
+                        <td>${purchase.domainName || 'N/A'}</td>
+                        <td>${purchase.subscription || 'N/A'}</td>
+                        <td>$${purchase.amount ? purchase.amount.toFixed(2) : '0.00'}</td>
+                        <td>$${purchase.ratePu ? purchase.ratePu.toFixed(2) : '0.00'}</td>
+                        <td>${startDate}</td>
+                        <td>${endDate}</td>
+                        <td>${purchase.planType || 'N/A'}</td>
+                        <td>${purchase.quantity || '0'}</td>
+                    `;
+                    purchasesTableBody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                purchasesTableBody.innerHTML = '<tr><td colspan="9" class="text-danger">An error occurred while loading purchases data.</td></tr>';
+            });
+        }
+
+        // Clear all data
+        function clearAllData() {
+            if (confirm('Are you sure you want to delete ALL data? This cannot be undone.')) {
+                fetch('/api/files/clear', {
+                    method: 'POST'
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert('All data has been cleared successfully.');
+                    // Refresh data
+                    loadSalesData();
+                    loadPurchasesData();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to clear data: ' + error.message);
+                });
+            }
+        }
+
+        // Function to run comparison
+        function runComparison() {
+            const matchesTableBody = document.getElementById('matches-table-body');
+            const comparisonResults = document.getElementById('comparison-results');
+            const discrepanciesList = document.getElementById('discrepancies-list');
+            
+            matchesTableBody.innerHTML = '<tr><td colspan="8" class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
+            comparisonResults.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>';
+            discrepanciesList.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>';
+            
+            fetch('/api/comparison')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Display summary results
+                comparisonResults.innerHTML = `
+                    <div class="alert alert-info mb-4">
+                        <h5>Comparison Results</h5>
+                        <p>Total Sales: ${data.totalSales}</p>
+                        <p>Total Purchases: ${data.totalPurchases}</p>
+                        <p>Matched Items: ${data.matchedItems}</p>
+                        <p>Unmatched Sales: ${data.unmatchedSales}</p>
+                        <p>Unmatched Purchases: ${data.unmatchedPurchases}</p>
+                    </div>
+                `;
+                
+                // Populate matches table
+                matchesTableBody.innerHTML = '';
+                
+                if (!data.matches || data.matches.length === 0) {
+                    matchesTableBody.innerHTML = '<tr><td colspan="8" class="text-center">No matching records found.</td></tr>';
+                } else {
+                    data.matches.forEach(match => {
+                        const row = document.createElement('tr');
+                        
+                        // Determine row style based on match status
+                        let rowClass = '';
+                        if (!match.customerNameMatch || !match.renewalDateMatch || !match.priceMatch || !match.quantityMatch) {
+                            rowClass = 'table-warning';
+                        }
+                        row.className = rowClass;
+                        
+                        // Format values
+                        const salePrice = match.sale && match.sale.normalizedMonthlyPrice 
+                            ? `${match.sale.normalizedMonthlyPrice.toFixed(2)}` : 'N/A';
+                        const purchasePrice = match.purchase && match.purchase.normalizedMonthlyPrice 
+                            ? `${match.purchase.normalizedMonthlyPrice.toFixed(2)}` : 'N/A';
+                            
+                        row.innerHTML = `
+                            <td>${match.sale ? match.sale.domainName : match.purchase.domainName}</td>
+                            <td>${match.sale ? match.sale.customerName : 'N/A'}</td>
+                            <td>${match.sale ? match.sale.itemName : match.purchase.subscription}</td>
+                            <td>${purchasePrice}</td>
+                            <td>${salePrice}</td>
+                            <td class="${match.renewalDateMatch ? 'text-success' : 'text-danger'}">${match.renewalDateMatch ? 'Yes' : 'No'}</td>
+                            <td class="${match.priceMatch ? 'text-success' : 'text-danger'}">${match.priceMatch ? 'Yes' : 'No'}</td>
+                            <td class="${match.quantityMatch ? 'text-success' : 'text-danger'}">${match.quantityMatch ? 'Yes' : 'No'}</td>
+                        `;
+                        matchesTableBody.appendChild(row);
+                    });
+                }
+                
+                // Populate discrepancies
+                discrepanciesList.innerHTML = '';
+                
+                // First handle unmatched sales
+                if (data.unmatchedSales > 0) {
+                    const unmatchedSalesDiv = document.createElement('div');
+                    unmatchedSalesDiv.className = 'mb-4';
+                    unmatchedSalesDiv.innerHTML = `
+                        <h4 class="mb-3">Unmatched Sales (${data.unmatchedSales})</h4>
+                    `;
+                    
+                    data.matches.filter(match => !match.priceMatch || !match.renewalDateMatch || !match.quantityMatch).forEach(mismatch => {
+                        if (mismatch.mismatchReason) {
+                            const mismatchItem = document.createElement('div');
+                            mismatchItem.className = 'notification-item mb-3';
+                            mismatchItem.innerHTML = `
+                                <h5>${mismatch.sale.itemName} - ${mismatch.sale.domainName}</h5>
+                                <p><strong>Issue:</strong> ${mismatch.mismatchReason}</p>
+                                <p><strong>Customer:</strong> ${mismatch.sale.customerName}</p>
+                            `;
+                            unmatchedSalesDiv.appendChild(mismatchItem);
+                        }
+                    });
+                    
+                    discrepanciesList.appendChild(unmatchedSalesDiv);
+                }
+                
+                // Check if there are any notifications
+                if (data.notifications && data.notifications.length > 0) {
+                    const notificationsDiv = document.createElement('div');
+                    notificationsDiv.innerHTML = `<h4 class="mb-3">Notifications</h4>`;
+                    
+                    data.notifications.forEach(notification => {
+                        const notificationItem = document.createElement('div');
+                        notificationItem.className = 'notification-item mb-3';
+                        notificationItem.innerHTML = `
+                            <h5>${notification.type}</h5>
+                            <p>${notification.message}</p>
+                            <p><strong>Domain:</strong> ${notification.domainName}</p>
+                            <p><strong>Item:</strong> ${notification.itemName}</p>
+                            <button class="btn btn-sm btn-primary" onclick="markNotificationAsRead(${notification.id})">Mark as Read</button>
+                            <button class="btn btn-sm btn-success ms-2" onclick="markNotificationAsResolved(${notification.id})">Mark as Resolved</button>
+                        `;
+                        notificationsDiv.appendChild(notificationItem);
+                    });
+                    
+                    discrepanciesList.appendChild(notificationsDiv);
+                }
+                
+                // If no discrepancies
+                if (discrepanciesList.children.length === 0) {
+                    discrepanciesList.innerHTML = '<p>No discrepancies or issues found.</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                matchesTableBody.innerHTML = '<tr><td colspan="8" class="text-danger">An error occurred while matching records.</td></tr>';
+                comparisonResults.innerHTML = `<div class="alert alert-danger">An error occurred: ${error.message}</div>`;
+                discrepanciesList.innerHTML = '<div class="alert alert-danger">An error occurred while fetching discrepancies.</div>';
+            });
+        }
+
+        // Load notifications - Enhanced version
+        function loadNotifications() {
+            const notificationsDiv = document.getElementById('notifications-list');
+            notificationsDiv.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>';
+            
+            console.log("Loading notifications...");
+            
+            // First fetch from debug endpoint to see if notifications exist
+            fetch('/api/notifications/debug')
+            .then(response => {
+                console.log("Debug response status:", response.status);
+                return response.json();
+            })
+            .then(debugData => {
+                console.log("Debug data:", debugData);
+                console.log("Number of notifications in system:", debugData.count);
+                
+                // Now fetch actual notifications
+                const notificationType = document.getElementById('notification-type').value;
+                let endpoint = '/api/notifications';
+                if (notificationType !== 'all') {
+                    endpoint = `/api/notifications/type/${notificationType}`;
+                }
+                
+                console.log("Fetching from endpoint:", endpoint);
+                
+                return fetch(endpoint);
+            })
+            .then(response => {
+                console.log("Response status:", response.status);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Notifications data:", data);
+                notificationsDiv.innerHTML = '';
+                
+                if (!data || data.length === 0) {
+                    // Try to force run a comparison if no notifications
+                    console.log("No notifications found, showing prompt for manual actions");
+                    notificationsDiv.innerHTML = `
+                        <div class="alert alert-warning">No notifications found. You can try to:
+                            <button class="btn btn-sm btn-primary ms-2" onclick="forceComparison()">Force Comparison</button>
+                            <button class="btn btn-sm btn-info ms-2" onclick="checkRenewals()">Check Renewals</button>
+                        </div>`;
+                    return;
+                }
+                
+                data.forEach(notification => {
+                    const notificationItem = document.createElement('div');
+                    notificationItem.className = 'notification-item';
+                    
+                    // Add class based on notification type
+                    if (notification.type) {
+                        notificationItem.classList.add(notification.type);
+                    }
+                    
+                    // Format date if available
+                    let createdDate = 'N/A';
+                    let dueDate = 'N/A';
+                    
+                    if (notification.createdDate) {
+                        createdDate = new Date(notification.createdDate).toLocaleDateString();
+                    }
+                    
+                    if (notification.dueDate) {
+                        dueDate = new Date(notification.dueDate).toLocaleDateString();
+                    }
+                    
+                    notificationItem.innerHTML = `
+                        <h5>${notification.type}</h5>
+                        <p>${notification.message}</p>
+                        <p><strong>Created:</strong> ${createdDate}</p>
+                        <p><strong>Due Date:</strong> ${dueDate}</p>
+                        <p><strong>Status:</strong> <span class="badge ${getBadgeClass(notification.status)}">${notification.status}</span></p>
+                        <div class="mt-2">
+                            <button class="btn btn-sm btn-primary" onclick="markNotificationAsRead(${notification.id})">Mark as Read</button>
+                            <button class="btn btn-sm btn-success ms-2" onclick="markNotificationAsResolved(${notification.id})">Mark as Resolved</button>
+                        </div>
+                    `;
+                    notificationsDiv.appendChild(notificationItem);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                notificationsDiv.innerHTML = `<div class="alert alert-danger">An error occurred: ${error.message}</div>`;
+            });
+        }
+        
+        // Function to force comparison
+        function forceComparison() {
+            const notificationsDiv = document.getElementById('notifications-list');
+            notificationsDiv.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>';
+            
+            fetch('/api/notifications/force-compare')
+            .then(response => response.json())
+            .then(data => {
+                alert('Comparison completed with ' + data.notificationsGenerated + ' notifications');
+                loadNotifications();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                notificationsDiv.innerHTML = `<div class="alert alert-danger">Failed to run comparison: ${error.message}</div>`;
+            });
+        }
+
+        // Function to check renewals
+        function checkRenewals() {
+            const notificationsDiv = document.getElementById('notifications-list');
+            notificationsDiv.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>';
+            
+            fetch('/api/notifications/renewals/check')
+            .then(response => response.json())
+            .then(data => {
+                alert('Renewal check completed with ' + data.notificationsGenerated + ' notifications');
+                loadNotifications();
+                // Also update the invoice notifications since renewals were checked
+                loadInvoiceNotifications();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                notificationsDiv.innerHTML = `<div class="alert alert-danger">Failed to check renewals: ${error.message}</div>`;
+            });
+        }
+        
+        // Get appropriate badge class based on notification status
+        function getBadgeClass(status) {
+            if (!status) return 'bg-secondary';
+            
+            switch (status.toUpperCase()) {
+                case 'NEW':
+                    return 'bg-danger';
+                case 'READ':
+                    return 'bg-warning';
+                case 'RESOLVED':
+                    return 'bg-success';
+                default:
+                    return 'bg-secondary';
+            }
+        }
+        
+        // Mark notification as read
+        function markNotificationAsRead(id) {
+            fetch(`/api/notifications/${id}/read`, {
+                method: 'PUT'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert('Notification marked as read');
+                loadNotifications();
+                loadInvoiceNotifications();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(`Failed to update notification: ${error.message}`);
+            });
+        }
+        
+        // Mark notification as resolved
+        function markNotificationAsResolved(id) {
+            fetch(`/api/notifications/${id}/resolve`, {
+                method: 'PUT'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert('Notification marked as resolved');
+                loadNotifications();
+                loadInvoiceNotifications();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(`Failed to update notification: ${error.message}`);
+            });
+        }
+        
+        // Load invoice notifications
+        function loadInvoiceNotifications() {
+            // Load pending invoices
+            const pendingInvoicesList = document.getElementById('pending-invoices-list');
+            pendingInvoicesList.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>';
+            
+            fetch('/api/notifications/type/INVOICE_NEEDED')
+            .then(response => response.json())
+            .then(notifications => {
+                pendingInvoicesList.innerHTML = '';
+                document.getElementById('pending-invoice-count').textContent = notifications.length;
+                
+                if (notifications.length === 0) {
+                    pendingInvoicesList.innerHTML = '<div class="alert alert-info">No pending invoice notifications found.</div>';
+                } else {
+                    notifications.forEach(notification => {
+                        const notificationElem = createNotificationElement(notification, 'INVOICE_NEEDED');
+                        pendingInvoicesList.appendChild(notificationElem);
+                    });
+                }
+                
+                updateInvoiceNotificationBadge();
+            })
+            .catch(error => {
+                console.error('Error loading pending invoices:', error);
+                pendingInvoicesList.innerHTML = '<div class="alert alert-danger">Error loading pending invoices: ' + error.message + '</div>';
+            });
+            
+            // Load overdue invoices
+            const overdueInvoicesList = document.getElementById('overdue-invoices-list');
+            overdueInvoicesList.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>';
+            
+            fetch('/api/notifications/type/INVOICE_OVERDUE')
+            .then(response => response.json())
+            .then(notifications => {
+                overdueInvoicesList.innerHTML = '';
+                document.getElementById('overdue-invoice-count').textContent = notifications.length;
+                
+                if (notifications.length === 0) {
+                    overdueInvoicesList.innerHTML = '<div class="alert alert-success">No overdue invoice notifications.</div>';
+                } else {
+                    notifications.forEach(notification => {
+                        const notificationElem = createNotificationElement(notification, 'INVOICE_OVERDUE');
+                        overdueInvoicesList.appendChild(notificationElem);
+                    });
+                }
+                
+                updateInvoiceNotificationBadge();
+            })
+            .catch(error => {
+                console.error('Error loading overdue invoices:', error);
+                overdueInvoicesList.innerHTML = '<div class="alert alert-danger">Error loading overdue invoices: ' + error.message + '</div>';
+            });
+            
+            // Load upcoming renewals
+            const upcomingRenewalsList = document.getElementById('upcoming-renewals-list');
+            upcomingRenewalsList.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>';
+            
+            fetch('/api/notifications/type/RENEWAL')
+            .then(response => response.json())
+            .then(notifications => {
+                upcomingRenewalsList.innerHTML = '';
+                document.getElementById('upcoming-renewal-count').textContent = notifications.length;
+                
+                if (notifications.length === 0) {
+                    upcomingRenewalsList.innerHTML = '<div class="alert alert-info">No upcoming renewal notifications found.</div>';
+                } else {
+                    notifications.forEach(notification => {
+                        const notificationElem = createNotificationElement(notification, 'RENEWAL');
+                        // Add "Create Invoice" button for renewals
+                        const actionDiv = notificationElem.querySelector('.notification-actions');
+                        const createInvoiceBtn = document.createElement('button');
+                        createInvoiceBtn.className = 'btn btn-sm btn-warning ms-2';
+                        createInvoiceBtn.textContent = 'Create Invoice';
+                        createInvoiceBtn.addEventListener('click', function() {
+                            createInvoiceForRenewal(notification.id);
+                        });
+                        actionDiv.appendChild(createInvoiceBtn);
+                        
+                        upcomingRenewalsList.appendChild(notificationElem);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error loading upcoming renewals:', error);
+                upcomingRenewalsList.innerHTML = '<div class="alert alert-danger">Error loading upcoming renewals: ' + error.message + '</div>';
+            });
+        }
+        
+        // Create a notification element
+        function createNotificationElement(notification, type) {
+            const div = document.createElement('div');
+            div.className = `notification-item ${type}`;
+            
+            // Format dates
+            let createdDate = 'N/A';
+            let dueDate = 'N/A';
+            
+            if (notification.createdDate) {
+                createdDate = new Date(notification.createdDate).toLocaleDateString();
+            }
+            
+            if (notification.dueDate) {
+                dueDate = new Date(notification.dueDate).toLocaleDateString();
+            }
+            
+            div.innerHTML = `
+                <div class="d-flex justify-content-between align-items-start">
+                    <h5>${notification.domainName} - ${notification.itemName}</h5>
+                    <span class="badge ${getBadgeClassForType(type)}">${type.replace('_', ' ')}</span>
+                </div>
+                <p>${notification.message}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <small class="text-muted">Created: ${createdDate}</small>
+                        ${notification.dueDate ? `<small class="text-muted ms-3">Due: ${dueDate}</small>` : ''}
+                        <small class="text-muted ms-3">Status: <span class="badge ${getBadgeClass(notification.status)}">${notification.status}</span></small>
+                    </div>
+                    <div class="notification-actions">
+                        <button class="btn btn-sm btn-primary" onclick="markNotificationAsRead(${notification.id})">Mark as Read</button>
+                        <button class="btn btn-sm btn-success ms-2" onclick="markNotificationAsResolved(${notification.id})">Mark as Resolved</button>
+                    </div>
+                </div>
+            `;
+            
+            return div;
+        }
+        
+        // Get badge class for notification type
+        function getBadgeClassForType(type) {
+            switch (type) {
+                case 'RENEWAL':
+                    return 'bg-info';
+                case 'INVOICE_NEEDED':
+                    return 'bg-warning text-dark';
+                case 'INVOICE_OVERDUE':
+                    return 'bg-danger';
+                case 'MISMATCH_PRICE':
+                case 'MISMATCH_DATE':
+                case 'MISMATCH_QUANTITY':
+                    return 'bg-secondary';
+                default:
+                    return 'bg-primary';
+            }
+        }
+        
+        // Create invoice for a renewal notification
+        function createInvoiceForRenewal(renewalId) {
+            fetch(`/api/notifications/create-invoice/${renewalId}`, {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Invoice notification created successfully!');
+                    loadInvoiceNotifications();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error creating invoice notification:', error);
+                alert('Failed to create invoice notification: ' + error.message);
+            });
+        }
+        
+        // Check for invoice notifications
+        function checkInvoiceNotifications() {
+            fetch('/api/notifications/check-invoice-notifications')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Invoice notification check completed.');
+                    loadInvoiceNotifications();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error checking invoice notifications:', error);
+                alert('Failed to check invoice notifications: ' + error.message);
+            });
+        }
+        
+        // Check for overdue invoices
+        function checkOverdueInvoices() {
+            fetch('/api/notifications/check-overdue-invoices')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Overdue invoice check completed.');
+                    loadInvoiceNotifications();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error checking overdue invoices:', error);
+                alert('Failed to check overdue invoices: ' + error.message);
+            });
+        }
+        
+        // Update the invoice notification badge count
+        function updateInvoiceNotificationBadge() {
+            const pendingCount = parseInt(document.getElementById('pending-invoice-count').textContent) || 0;
+            const overdueCount = parseInt(document.getElementById('overdue-invoice-count').textContent) || 0;
+            const totalCount = pendingCount + overdueCount;
+            
+            const badge = document.getElementById('invoice-notification-count');
+            
+            if (totalCount > 0) {
+                badge.textContent = totalCount;
+                badge.style.display = 'inline-block';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+        
+        // Update notification count badge
+        function updateNotificationBadge() {
+            fetch('/api/notifications/new')
+            .then(response => response.json())
+            .then(notifications => {
+                const badge = document.getElementById('notification-count');
+                if (notifications.length > 0) {
+                    badge.textContent = notifications.length;
+                    badge.style.display = 'inline-block';
+                } else {
+                    badge.style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.error('Error updating notification badge:', error);
+            });
+        }
+        
+        // Add event listener for invoice notifications tab
+        document.getElementById('invoice-notifications-tab').addEventListener('click', function() {
+            loadInvoiceNotifications();
+        });
+        
+        // Add event listener for notifications tab
+        document.getElementById('notifications-tab').addEventListener('click', function() {
+            console.log("Notifications tab clicked - loading notifications");
+            loadNotifications();
+        });
+        
+        // Load initial data
+        window.addEventListener('DOMContentLoaded', function() {
+            loadSalesData();
+            loadPurchasesData();
+            updateNotificationBadge();
+            // Set interval to update notification badge every minute
+            setInterval(updateNotificationBadge, 60000);
+        });
+    </script>
+</body>
+</html>
