@@ -4,6 +4,8 @@ WORKDIR /app
 
 # Copy pom.xml for dependency resolution
 COPY pom.xml .
+RUN mvn dependency:go-offline
+
 # Copy source code
 COPY src ./src
 
@@ -25,13 +27,14 @@ WORKDIR /app
 # Copy the built JAR file
 COPY --from=build /app/target/*.jar app.jar
 
+ENV PORT=8080
+
 # Expose the port the app runs on
 EXPOSE 8080
 
 # At the end of your Dockerfile, before the ENTRYPOINT
-RUN echo "PORT is set to: $PORT"
-EXPOSE ${PORT:-8080}
-ENTRYPOINT ["sh", "-c", "echo \"Starting application on port ${PORT:-8080}\" && java -jar app.jar"]
+# RUN echo "PORT is set to: $PORT"
+ENTRYPOINT ["sh", "-c", "echo \"Starting application on port $PORT\" && java -jar app.jar --server.port=$PORT"]
 
 # Run the application
 #ENTRYPOINT ["java", "-jar", "app.jar"]
