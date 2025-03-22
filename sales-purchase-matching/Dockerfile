@@ -17,7 +17,7 @@ RUN sed -i '/<path>/,/<\/path>/c\        <path>\n          <groupId>org.projectl
 
 
 # Build the application
-RUN mvn package -DskipTests
+RUN mvn clean package -DskipTests
 
 # Run stage
 FROM eclipse-temurin:17-jre
@@ -34,7 +34,8 @@ EXPOSE 8080
 
 # At the end of your Dockerfile, before the ENTRYPOINT
 # RUN echo "PORT is set to: $PORT"
-ENTRYPOINT ["sh", "-c", "echo \"Starting application on port $PORT\" && java -jar app.jar --server.port=$PORT"]
-
+#ENTRYPOINT ["sh", "-c", "echo \"Starting application on port $PORT\" && java -jar app.jar --server.port=$PORT"]
+# Ensure the app binds to 0.0.0.0:$PORT (required for Cloud Run)
+ENTRYPOINT ["sh", "-c", "java -jar app.jar --server.port=0.0.0.0:$PORT"]
 # Run the application
 #ENTRYPOINT ["java", "-jar", "app.jar"]
