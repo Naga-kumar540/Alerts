@@ -113,8 +113,7 @@
 		</plugins>
 	</build>
 
-</project>
- -->
+</project> -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -137,13 +136,13 @@
     </properties>
 
     <dependencies>
-        <!-- Spring Boot Starter Web -->
+       
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!-- Lombok -->
+     
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -151,12 +150,12 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Other dependencies -->
+      
     </dependencies>
 
     <build>
         <plugins>
-            <!-- Maven Compiler Plugin -->
+           
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
