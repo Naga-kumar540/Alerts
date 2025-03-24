@@ -124,7 +124,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.2.3</version>
-        <relativePath /> 
+        <relativePath /> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.invoice</groupId>
     <artifactId>sales-purchase-matching</artifactId>
@@ -135,11 +135,11 @@
 
     <properties>
         <java.version>17</java.version>
-        <lombok.version>1.18.30</lombok.version> 
+        <lombok.version>1.18.30</lombok.version> <!-- Add Lombok version -->
     </properties>
 
     <dependencies>
-        
+        <!-- Spring Boot Starters -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -164,22 +164,22 @@
             <optional>true</optional>
         </dependency>
 
-        
+        <!-- Database -->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
             <scope>runtime</scope>
         </dependency>
 
-       
+        <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version> 
+            <version>${lombok.version}</version> <!-- Use the version from properties -->
             <scope>provided</scope>
         </dependency>
 
-        
+        <!-- Apache POI -->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
@@ -191,7 +191,7 @@
             <version>5.2.2</version>
         </dependency>
 
-      
+        <!-- Testing -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -201,7 +201,7 @@
 
     <build>
         <plugins>
-          
+            <!-- Maven Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -211,13 +211,13 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
-                            <version>${lombok.version}</version> 
+                            <version>${lombok.version}</version> <!-- Specify Lombok version here -->
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
 
-        
+            <!-- Spring Boot Maven Plugin -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
