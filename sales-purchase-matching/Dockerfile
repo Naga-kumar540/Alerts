@@ -51,6 +51,10 @@ RUN sed -i 's/<version>3.4.3<\/version>/<version>3.2.3<\/version>/' pom.xml
 # Fix the annotation processor path issue with a hardcoded version
 RUN sed -i '/<path>/,/<\/path>/c\        <path>\n          <groupId>org.projectlombok<\/groupId>\n          <artifactId>lombok<\/artifactId>\n          <version>1.18.30<\/version>\n        <\/path>' pom.xml
 
+# Create application.properties file to ensure port binding
+RUN mkdir -p src/main/resources
+RUN echo 'server.port=${PORT:8080}\nserver.address=0.0.0.0\nspring.main.web-application-type=servlet\nspring.main.banner-mode=off' > src/main/resources/application-cloud.properties
+
 # Build the application
 RUN mvn clean package -DskipTests
 
@@ -62,16 +66,23 @@ WORKDIR /app
 # Copy the built JAR file
 COPY --from=build /app/target/*.jar app.jar
 
-# Create a startup script with better diagnostics
+# Set environment variables
+ENV PORT=8080
+ENV JAVA_OPTS="-Xmx512m -Xms256m"
+
+# Create a startup script with better diagnostics and explicit port binding
 RUN echo '#!/bin/sh\n\
 echo "Container starting..."\n\
 echo "PORT=$PORT"\n\
 echo "JAVA_OPTS=$JAVA_OPTS"\n\
-java -Dserver.port=$PORT -Dserver.address=0.0.0.0 -Dspring.profiles.active=cloud -jar app.jar\n' > /app/start.sh && \
+java $JAVA_OPTS -Dserver.port=$PORT -Dserver.address=0.0.0.0 -Dspring.profiles.active=cloud -Dspring.web.resources.static-locations=classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/ -jar app.jar\n' > /app/start.sh && \
 chmod +x /app/start.sh
 
-# Expose port 8080 (for documentation, doesn't actually publish the port)
+# Expose port 8080 (for documentation)
 EXPOSE 8080
+
+# Set health check to give more time for startup
+HEALTHCHECK --interval=5s --timeout=3s --retries=3 CMD wget -q --spider http://localhost:$PORT/ || exit 1
 
 # Use the startup script as entrypoint
 ENTRYPOINT ["/app/start.sh"]
